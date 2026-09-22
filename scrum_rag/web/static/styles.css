@@ -102,6 +102,16 @@ p {
   line-height: 1.45;
 }
 
+.source-link {
+  color: var(--accent-strong);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.source-link:hover {
+  text-decoration: underline;
+}
+
 .chat-panel {
   display: grid;
   grid-template-rows: auto 1fr auto;
