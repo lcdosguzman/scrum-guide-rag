@@ -100,6 +100,7 @@ async def send_file(send, path: Path, content_type: str) -> None:
             "headers": [
                 [b"content-type", content_type.encode("utf-8")],
                 [b"content-length", str(len(content)).encode("utf-8")],
+                [b"cache-control", b"no-store"],
             ],
         }
     )
