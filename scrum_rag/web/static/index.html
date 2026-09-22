@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scrum RAG</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="sidebar" aria-label="Informacion del sistema">
+        <div class="brand">
+          <span class="brand-mark">SR</span>
+          <div>
+            <h1>Scrum RAG</h1>
+            <p>Guia de Scrum 2020</p>
+          </div>
+        </div>
+
+        <section class="status-panel">
+          <span class="status-dot"></span>
+          <div>
+            <strong>Base local</strong>
+            <p>Chroma + Ollama</p>
+          </div>
+        </section>
+
+        <section class="guide-panel">
+          <h2>Fuentes</h2>
+          <p>Las respuestas se generan con fragmentos recuperados de la Guia de Scrum.</p>
+        </section>
+      </aside>
+
+      <section class="chat-panel" aria-label="Chat con el RAG">
+        <header class="chat-header">
+          <div>
+            <p class="eyebrow">Asistente local</p>
+            <h2>Pregunta sobre Scrum</h2>
+          </div>
+        </header>
+
+        <div id="messages" class="messages" aria-live="polite">
+          <article class="message assistant">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+              <p>Hola. Preguntame algo sobre la Guia de Scrum y te respondere usando las fuentes recuperadas.</p>
+            </div>
+          </article>
+        </div>
+
+        <form id="chat-form" class="composer">
+          <textarea
+            id="question"
+            name="question"
+            rows="1"
+            placeholder="Ej: Que responsabilidades tiene el Scrum Master?"
+            autocomplete="off"
+          ></textarea>
+          <button id="send-button" type="submit">Enviar</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>
