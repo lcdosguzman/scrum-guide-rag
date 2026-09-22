@@ -22,6 +22,12 @@ async def app(scope, receive, send):
         await send_file(send, STATIC_DIR / "index.html", "text/html; charset=utf-8")
         return
 
+    if method == "GET" and path in {"/styles.css", "/app.js"}:
+        file_path = STATIC_DIR / path.removeprefix("/")
+        content_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
+        await send_file(send, file_path, content_type)
+        return
+
     if method == "GET" and path.startswith("/static/"):
         requested = unquote(path.removeprefix("/static/"))
         file_path = (STATIC_DIR / requested).resolve()
