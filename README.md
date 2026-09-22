@@ -1,4 +1,4 @@
-# RAG sobre la Guia de Scrum
+# scrum-guide-rag
 
 Primer proyecto para construir y entender un RAG local en Python.
 
