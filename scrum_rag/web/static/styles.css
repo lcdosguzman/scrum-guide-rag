@@ -110,9 +110,85 @@ p {
 }
 
 .chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
   padding: 22px 30px;
   border-bottom: 1px solid var(--line);
   background: rgba(255, 255, 255, 0.74);
+}
+
+.chat-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 40px;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.mode-toggle input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.toggle-track {
+  display: inline-flex;
+  align-items: center;
+  width: 44px;
+  height: 24px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #d9d3ca;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.toggle-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(33, 31, 29, 0.22);
+  transition: transform 160ms ease;
+}
+
+.mode-toggle input:checked + .toggle-track {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.mode-toggle input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(20px);
+}
+
+.mode-toggle input:focus-visible + .toggle-track {
+  box-shadow: 0 0 0 3px rgba(18, 108, 99, 0.18);
+}
+
+.secondary-button {
+  min-width: 74px;
+  height: 40px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: var(--text);
+}
+
+.secondary-button:hover {
+  border-color: var(--accent);
+  background: #f5fbfa;
 }
 
 .eyebrow {
@@ -188,12 +264,16 @@ p {
 }
 
 .sources {
-  display: grid;
+  display: none;
   gap: 8px;
   margin-top: 16px;
   padding-top: 14px;
   border-top: 1px solid var(--line);
   white-space: normal;
+}
+
+.debug-mode .sources {
+  display: grid;
 }
 
 .sources h3 {
@@ -279,6 +359,16 @@ button:disabled {
     border-bottom: 1px solid var(--line);
   }
 
+  .chat-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .chat-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .message,
   .message.user {
     grid-template-columns: 36px minmax(0, 1fr);
@@ -301,7 +391,7 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 
-  button {
+  .composer button {
     width: 100%;
   }
 }

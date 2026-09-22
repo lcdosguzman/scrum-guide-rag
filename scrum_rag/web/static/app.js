@@ -2,6 +2,24 @@ const form = document.querySelector("#chat-form");
 const input = document.querySelector("#question");
 const messages = document.querySelector("#messages");
 const sendButton = document.querySelector("#send-button");
+const debugToggle = document.querySelector("#debug-toggle");
+const resetButton = document.querySelector("#reset-chat");
+
+const welcomeMessage =
+  "Hola. Preguntame algo sobre la Guia de Scrum y te respondere usando las fuentes recuperadas.";
+
+debugToggle.checked = localStorage.getItem("scrum-rag-debug") === "true";
+document.body.classList.toggle("debug-mode", debugToggle.checked);
+
+debugToggle.addEventListener("change", () => {
+  localStorage.setItem("scrum-rag-debug", String(debugToggle.checked));
+  document.body.classList.toggle("debug-mode", debugToggle.checked);
+});
+
+resetButton.addEventListener("click", () => {
+  resetChat();
+  input.focus();
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -99,4 +117,9 @@ function addAssistantMessage(answer, sources) {
   }
 
   bubble.append(sourceList);
+}
+
+function resetChat() {
+  messages.replaceChildren();
+  addMessage("assistant", welcomeMessage);
 }
