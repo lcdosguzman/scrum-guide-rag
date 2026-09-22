@@ -4,9 +4,11 @@ const messages = document.querySelector("#messages");
 const sendButton = document.querySelector("#send-button");
 const debugToggle = document.querySelector("#debug-toggle");
 const resetButton = document.querySelector("#reset-chat");
+const messageList = document.querySelector(".message-list");
+const suggestions = document.querySelector("#suggestions");
 
 const welcomeMessage =
-  "Hola. Preguntame algo sobre la Guia de Scrum y te respondere usando las fuentes recuperadas.";
+  "Hola. Preguntame algo sobre la Guia de Scrum y respondere usando las fuentes recuperadas.";
 
 debugToggle.checked = localStorage.getItem("scrum-rag-debug") === "true";
 document.body.classList.toggle("debug-mode", debugToggle.checked);
@@ -21,6 +23,15 @@ resetButton.addEventListener("click", () => {
   input.focus();
 });
 
+suggestions.addEventListener("click", (event) => {
+  const button = event.target.closest(".suggestion");
+  if (!button) return;
+
+  input.value = button.textContent;
+  resizeInput();
+  form.requestSubmit();
+});
+
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -28,10 +39,11 @@ form.addEventListener("submit", async (event) => {
   if (!question) return;
 
   addMessage("user", question);
+  suggestions.hidden = true;
   input.value = "";
   resizeInput();
 
-  const loading = addMessage("assistant", "Consultando la guia...", true);
+  const loading = addMessage("assistant", "Consultando fuentes...", true);
   sendButton.disabled = true;
 
   try {
@@ -50,7 +62,7 @@ form.addEventListener("submit", async (event) => {
     addAssistantMessage(payload.answer, payload.sources || []);
   } catch (error) {
     loading.remove();
-    addMessage("assistant", error.message);
+    addMessage("assistant", error.message, false, true);
   } finally {
     sendButton.disabled = false;
     input.focus();
@@ -70,9 +82,9 @@ function resizeInput() {
   input.style.height = `${Math.min(input.scrollHeight, 180)}px`;
 }
 
-function addMessage(role, text, isLoading = false) {
+function addMessage(role, text, isLoading = false, isError = false) {
   const article = document.createElement("article");
-  article.className = `message ${role}${isLoading ? " loading" : ""}`;
+  article.className = `message ${role}${isLoading ? " loading" : ""}${isError ? " error" : ""}`;
 
   const avatar = document.createElement("div");
   avatar.className = "avatar";
@@ -86,7 +98,7 @@ function addMessage(role, text, isLoading = false) {
   bubble.append(paragraph);
 
   article.append(avatar, bubble);
-  messages.append(article);
+  messageList.append(article);
   messages.scrollTop = messages.scrollHeight;
   return article;
 }
@@ -120,6 +132,8 @@ function addAssistantMessage(answer, sources) {
 }
 
 function resetChat() {
-  messages.replaceChildren();
+  messageList.replaceChildren();
   addMessage("assistant", welcomeMessage);
+  messageList.append(suggestions);
+  suggestions.hidden = false;
 }

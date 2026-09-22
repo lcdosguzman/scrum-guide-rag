@@ -23,11 +23,12 @@
             <strong>Base local</strong>
             <p>Chroma + Ollama</p>
           </div>
+          <span class="status-badge">Activa</span>
         </section>
 
         <section class="guide-panel">
           <h2>Fuentes</h2>
-          <p>Las respuestas se generan con fragmentos recuperados de la Guia de Scrum.</p>
+          <p>Las respuestas usan fragmentos recuperados de la Guia de Scrum.</p>
           <a
             class="source-link"
             href="https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Spanish-Latin-South-American.pdf"
@@ -43,38 +44,68 @@
         <header class="chat-header">
           <div>
             <p class="eyebrow">Asistente local</p>
-            <h2>Pregunta sobre Scrum</h2>
+            <h2>Pregunta a La Guia de Scrum</h2>
           </div>
           <div class="chat-actions" aria-label="Controles del chat">
-            <label class="mode-toggle">
-              <input id="debug-toggle" type="checkbox" />
+            <label
+              class="mode-toggle has-tooltip"
+              data-tooltip="Modo debug muestra los fragmentos de la guia que el RAG recupero antes de responder."
+            >
+              <input
+                id="debug-toggle"
+                type="checkbox"
+                aria-label="Activar modo debug para mostrar fragmentos recuperados"
+                aria-describedby="debug-toggle-help"
+              />
               <span class="toggle-track" aria-hidden="true">
                 <span class="toggle-thumb"></span>
               </span>
-              <span class="mode-label">Modo debug</span>
+              <span id="debug-toggle-help" class="mode-label">Modo debug</span>
             </label>
-            <button id="reset-chat" class="secondary-button" type="button">Limpiar chat</button>
+            <button
+              id="reset-chat"
+              class="secondary-button has-tooltip"
+              type="button"
+              aria-label="Limpiar la conversacion actual"
+              data-tooltip="Borra los mensajes visibles y vuelve al inicio."
+            >
+              Limpiar chat
+            </button>
           </div>
         </header>
 
         <div id="messages" class="messages" aria-live="polite">
-          <article class="message assistant">
-            <div class="avatar">AI</div>
-            <div class="bubble">
-              <p>Hola. Preguntame algo sobre la Guia de Scrum y te respondere usando las fuentes recuperadas.</p>
-            </div>
-          </article>
+          <div class="message-list">
+            <article class="message assistant">
+              <div class="avatar">AI</div>
+              <div class="bubble">
+                <p>Hola. Preguntame algo sobre la Guia de Scrum y respondere usando las fuentes recuperadas.</p>
+              </div>
+            </article>
+
+            <section id="suggestions" class="suggestions" aria-label="Preguntas sugeridas">
+              <button type="button" class="suggestion">Que responsabilidades tiene el Scrum Master?</button>
+              <button type="button" class="suggestion">Que eventos existen en Scrum?</button>
+              <button type="button" class="suggestion">Cual es la diferencia entre Product Goal y Sprint Goal?</button>
+              <button type="button" class="suggestion">Que contiene el Product Backlog?</button>
+            </section>
+          </div>
         </div>
 
         <form id="chat-form" class="composer">
-          <textarea
-            id="question"
-            name="question"
-            rows="1"
-            placeholder="Ej: Que responsabilidades tiene el Scrum Master?"
-            autocomplete="off"
-          ></textarea>
-          <button id="send-button" type="submit">Enviar</button>
+          <div class="composer-inner">
+            <textarea
+              id="question"
+              name="question"
+              rows="1"
+              placeholder="Pregunta algo sobre roles, eventos o artefactos Scrum..."
+              autocomplete="off"
+            ></textarea>
+            <button id="send-button" type="submit" aria-label="Enviar pregunta">
+              <span class="send-label">Enviar</span>
+              <span class="send-icon" aria-hidden="true">→</span>
+            </button>
+          </div>
         </form>
       </section>
     </main>
