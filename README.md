@@ -61,6 +61,7 @@ scrum-guide-rag/
   scrum_rag/
     config.py                    # Main configuration
     loaders.py                   # Document loading
+    guardrails.py                # Custom hallucination guardrails
     ingest.py                    # Indexing
     rag.py                       # RAG engine
     chat.py                      # Terminal chat
@@ -70,6 +71,8 @@ scrum-guide-rag/
       app.py                     # ASGI web server
       static/                    # Frontend
   requirements.txt
+  requirements-dev.txt
+  pyproject.toml
   README.md
   README.es.md
 ```
@@ -97,6 +100,12 @@ cd scrum-guide-rag
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+For development and automated tests, install the development dependencies:
+
+```bash
+pip install -r requirements-dev.txt
 ```
 
 ## Usage
@@ -163,6 +172,30 @@ python3 -m scrum_rag.evaluate
 Reports are saved in `eval/reports/`.
 
 The golden dataset lives in `eval/golden_dataset.jsonl`.
+
+## Automated Tests
+
+The project includes unit tests for pure functions that do not require Ollama or Chroma:
+
+- query term extraction;
+- text normalization;
+- unsupported-choice guardrails;
+- evaluation helpers.
+
+Install the development dependencies and run them with:
+
+```bash
+pip install -r requirements-dev.txt
+python3 -m pytest
+```
+
+To include a local coverage report:
+
+```bash
+python3 -m pytest --cov=scrum_rag
+```
+
+The guardrail tests are intentionally separate from the RAG engine. The unsupported-choice guardrail is a custom hallucination mitigation for questions that try to force the model to pick from options that are not supported by the retrieved context.
 
 ## What The Evaluation Measures
 

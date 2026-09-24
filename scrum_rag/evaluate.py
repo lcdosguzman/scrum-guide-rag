@@ -12,6 +12,7 @@ from rich.table import Table
 
 from scrum_rag.config import CHAT_MODEL, CHUNK_OVERLAP, CHUNK_SIZE, EMBEDDING_MODEL, RETRIEVAL_K
 from scrum_rag.rag import ScrumRag
+from scrum_rag.text_utils import normalize
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET = PROJECT_ROOT / "eval" / "golden_dataset.jsonl"
@@ -162,10 +163,6 @@ def term_coverage(answer: str, terms: list[str]) -> float:
 def contains_abstention(answer: str) -> bool:
     answer_text = normalize(answer)
     return any(marker in answer_text for marker in ABSTENTION_MARKERS)
-
-
-def normalize(text: str) -> str:
-    return " ".join(text.lower().split())
 
 
 def summarize(results: list[EvalResult]) -> dict[str, Any]:

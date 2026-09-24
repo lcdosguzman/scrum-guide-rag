@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["scrum_rag"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

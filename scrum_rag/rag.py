@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from pathlib import Path
-import re
 from typing import Optional
 
 from langchain_chroma import Chroma
@@ -8,6 +7,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 from scrum_rag.config import CHAT_MODEL, DB_DIR, EMBEDDING_MODEL, RETRIEVAL_K
+from scrum_rag.guardrails import UNSUPPORTED_CHOICE_ANSWER, should_block_unsupported_choice
 
 PROMPT = ChatPromptTemplate.from_messages(
     [
@@ -99,35 +99,6 @@ def query_terms(query: str) -> list[str]:
     return list(dict.fromkeys(terms))
 
 
-def normalize(text: str) -> str:
-    return " ".join(text.lower().split())
-
-
-def extract_choice_options(question: str) -> list[str]:
-    if ":" not in question:
-        return []
-
-    options_text = question.split(":", maxsplit=1)[1]
-    options = re.split(r",|\bo\b", options_text, flags=re.IGNORECASE)
-    return [
-        normalize(option.strip(" ?.¿!¡"))
-        for option in options
-        if len(normalize(option.strip(" ?.¿!¡"))) >= 6
-    ]
-
-
-def needs_supported_choice(question: str) -> bool:
-    text = normalize(question)
-    markers = ["obligatorio", "obligatoria", "exige", "recomienda", "debe usar"]
-    return bool(extract_choice_options(question)) and any(marker in text for marker in markers)
-
-
-def has_supported_choice(question: str, docs) -> bool:
-    options = extract_choice_options(question)
-    context = normalize("\n".join(doc.page_content for doc in docs))
-    return any(option in context for option in options)
-
-
 class ScrumRag:
     def __init__(self) -> None:
         if not DB_DIR.exists():
@@ -148,12 +119,9 @@ class ScrumRag:
         contexts = [doc.page_content for doc in docs]
         sources = build_sources(docs)
 
-        if needs_supported_choice(question) and not has_supported_choice(question, docs):
+        if should_block_unsupported_choice(question, docs):
             return RagAnswer(
-                answer=(
-                    "La Guia de Scrum no especifica ninguna de esas opciones en el contexto recuperado. "
-                    "No puedo elegir un formato obligatorio sin evidencia en la guia."
-                ),
+                answer=UNSUPPORTED_CHOICE_ANSWER,
                 sources=sources,
                 contexts=contexts,
             )

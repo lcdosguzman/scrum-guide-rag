@@ -61,6 +61,7 @@ scrum-guide-rag/
   scrum_rag/
     config.py                    # Configuracion principal
     loaders.py                   # Carga de documentos
+    guardrails.py                # Guardrails custom contra alucinaciones
     ingest.py                    # Indexado
     rag.py                       # Motor RAG
     chat.py                      # Chat por terminal
@@ -70,6 +71,8 @@ scrum-guide-rag/
       app.py                     # Servidor web ASGI
       static/                    # Frontend
   requirements.txt
+  requirements-dev.txt
+  pyproject.toml
   README.md
   README.es.md
 ```
@@ -97,6 +100,12 @@ cd scrum-guide-rag
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+```
+
+Para desarrollo y tests automatizados, instala las dependencias de desarrollo:
+
+```bash
+pip install -r requirements-dev.txt
 ```
 
 ## Uso
@@ -163,6 +172,30 @@ python3 -m scrum_rag.evaluate
 Los reportes se guardan en `eval/reports/`.
 
 El golden dataset esta en `eval/golden_dataset.jsonl`.
+
+## Tests Automatizados
+
+El proyecto incluye tests unitarios para funciones puras que no requieren Ollama ni Chroma:
+
+- extraccion de terminos de busqueda;
+- normalizacion de texto;
+- guardrails de opciones no soportadas;
+- helpers de evaluacion.
+
+Instala las dependencias de desarrollo y ejecutalos con:
+
+```bash
+pip install -r requirements-dev.txt
+python3 -m pytest
+```
+
+Para incluir un reporte local de cobertura:
+
+```bash
+python3 -m pytest --cov=scrum_rag
+```
+
+Los tests de guardrails estan separados intencionalmente del motor RAG. El guardrail de opciones no soportadas es una mitigacion custom contra alucinaciones para preguntas que intentan forzar al modelo a elegir entre opciones que no estan respaldadas por el contexto recuperado.
 
 ## Que Mide La Evaluacion
 
